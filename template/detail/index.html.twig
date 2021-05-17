@@ -1,0 +1,28 @@
+{% extends 'main.html.twig' %}
+
+{% block title %}{{ detail.title }}{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ detail.title }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-auto">
+                <img src="{{ detail.image }}"  alt="">
+            </div>
+            <div class="col">
+                <h1>{{ detail.title }}</h1>
+                <p class="my-4">{{ detail.description }}</p>
+                <a href="{{ detail.link }}"class="btn btn-success" target="_blank" >Open source</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

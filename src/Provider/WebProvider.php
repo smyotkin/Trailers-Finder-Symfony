@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace App\Provider;
 
 use App\Controller\HomeController;
+use App\Controller\DetailController;
 use App\Support\Config;
 use App\Support\ServiceProviderInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,6 +32,7 @@ class WebProvider implements ServiceProviderInterface
     public function register(Container $container)
     {
         $this->defineControllerDi($container);
+        $this->defineControllerDetail($container);
         $this->defineRoutes($container);
     }
 
@@ -47,15 +49,26 @@ class WebProvider implements ServiceProviderInterface
     /**
      * @param Container $container
      */
+    protected function defineControllerDetail(Container $container): void
+    {
+        $container->set(DetailController::class, static function (ContainerInterface $container) {
+            return new DetailController($container->get(RouteCollectorInterface::class), $container->get(Environment::class), $container->get(EntityManagerInterface::class));
+        });
+    }
+
+    /**
+     * @param Container $container
+     */
     protected function defineRoutes(Container $container): void
     {
         $router = $container->get(RouteCollectorInterface::class);
 
         $router->group('/', function (RouteCollectorProxyInterface $router) use ($container) {
             $routes = self::getRoutes($container);
+
             foreach ($routes as $routeName => $routeConfig) {
                 $router->{$routeConfig['method']}($routeConfig['path'] ?? '', $routeConfig['controller'] . ':' . $routeConfig['action'])
-                    ->setName($routeName);
+                ->setName($routeName);
             }
         });
     }
