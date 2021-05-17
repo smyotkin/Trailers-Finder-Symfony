@@ -120,21 +120,32 @@ class FetchDataCommand extends Command
     protected function processXml(string $data): void
     {
         $xml = (new \SimpleXMLElement($data))->children();
-//        $namespace = $xml->getNamespaces(true)['content'];
-//        dd((string) $xml->channel->item[0]->children($namespace)->encoded);
+        $namespace = $xml->getNamespaces(true)['content'];
 
         if (!property_exists($xml, 'channel')) {
             throw new RuntimeException('Could not find \'channel\' element in feed');
         }
+
+        $limiter = 0;
+        $dom = new \DOMDocument();
+
         foreach ($xml->channel->item as $item) {
+            $dom->loadHTML((string) $item->children($namespace)->encoded);
+            $img = $dom->getElementsByTagName('img')[0]->getAttribute('src') ?? NULL;
+
             $trailer = $this->getMovie((string) $item->title)
                 ->setTitle((string) $item->title)
                 ->setDescription((string) $item->description)
                 ->setLink((string) $item->link)
                 ->setPubDate($this->parseDate((string) $item->pubDate))
+                ->setImage((string) $img)
             ;
 
             $this->doctrine->persist($trailer);
+
+            if (++$limiter == 10) {
+                break;
+            }
         }
 
         $this->doctrine->flush();
