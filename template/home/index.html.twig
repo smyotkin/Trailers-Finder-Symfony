@@ -4,7 +4,14 @@
 
 {% block content %}
     <div class="container">
-        <h1 class="mt-5 mb-4">{{ trailers | length }} iTunes Movie trailers</h1>
+        <div class="row mt-5 mb-4">
+            <div class="col">
+                <h1>{{ trailers | length }} iTunes Movie trailers</h1>
+            </div>
+            <div class="col d-flex align-items-center justify-content-end">
+                <h4>{{ "now"|date("d.m.Y - H:i") }}</h4>
+            </div>
+        </div>
         <table class="table table-bordered">
             {% for trailer in trailers %}
                 <tr>
