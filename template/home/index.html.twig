@@ -12,6 +12,9 @@
                 <h4>{{ "now"|date("d.m.Y - H:i") }}</h4>
             </div>
         </div>
+
+        <p class="mb-4">Current class: <strong>{{ currentclass }}</strong> <br> Current method: <strong>{{ currentmethod }}</strong></p>
+
         <table class="table table-bordered">
             {% for trailer in trailers %}
                 <tr>
